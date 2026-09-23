@@ -756,7 +756,51 @@ if(!state.leads.length && !localStorage.getItem(LS_KEY)){
   ];
   save();
 }
+
+/* ===== IMPORT FROM EXTENSION (via URL hash #addlead=<base64 json>) ===== */
+function handleIncomingLead(){
+  const m=(location.hash||'').match(/[#&]addlead=([^&]+)/);
+  if(!m)return;
+  let clean=()=>{try{history.replaceState(null,'',location.pathname+location.search)}catch(e){location.hash=''}};
+  let payload;
+  try{payload=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));}
+  catch(e){clean();toast('No se pudo leer el lead recibido');return;}
+  const arr=Array.isArray(payload)?payload:[payload];
+  let added=0,dup=0,lastId=null;
+  arr.forEach(p=>{
+    if(!p||typeof p!=='object')return;
+    if(p.url&&state.leads.some(l=>l.url&&l.url===p.url)){dup++;return;}
+    const lead={
+      id:uid(),created:new Date().toISOString(),
+      type:p.type==='comprador'?'comprador':'vendedor',
+      agency:['no','si','desconocido'].includes(p.agency)?p.agency:'desconocido',
+      name:(p.name||'').toString().slice(0,120),
+      phone:(p.phone||'').toString().slice(0,40),
+      source:(p.source||'Otro').toString().slice(0,40),
+      zone:(p.zone||'').toString().slice(0,120),
+      prop:(p.prop||'Piso').toString().slice(0,40),
+      price:(p.price!=null?String(p.price).replace(/[^\d]/g,''):''),
+      url:(p.url||'').toString().slice(0,500),
+      status:'nuevo',due:'',
+      notes:(p.notes||'').toString().slice(0,1000),
+      history:[{t:new Date().toISOString(),txt:'Importado con la extensión de captura'}]
+    };
+    if(!lead.name&&!lead.phone&&!lead.url)return;
+    if(!lead.name)lead.name=lead.zone||lead.prop||'Anuncio importado';
+    state.leads.unshift(lead);added++;lastId=lead.id;
+  });
+  save();clean();
+  document.querySelector('#tabs button[data-view="board"]').click();
+  renderAll();
+  if(added&&dup)toast(added+' lead(s) importado(s) · '+dup+' ya existían');
+  else if(added)toast(added===1?'Lead importado desde la extensión':added+' leads importados');
+  else if(dup)toast('Ese anuncio ya estaba en tu CRM');
+  if(lastId)setTimeout(()=>{try{openDetail(lastId)}catch(e){}},350);
+}
+window.addEventListener('hashchange',handleIncomingLead);
+
 renderAll();
+handleIncomingLead();
 </script>
 </body>
 </html>

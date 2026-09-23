@@ -8,7 +8,13 @@ Aplicación web (un solo archivo, sin servidor) para **organizar la captación d
 - **Plantillas de mensaje** con variables (`{nombre}`, `{zona}`, `{inmueble}`…) para contactar por WhatsApp/email con un clic.
 - **Agenda** de próximos seguimientos.
 - Botones rápidos de **WhatsApp** y **Llamar**.
+- Vista de **tablero** (kanban) y vista de **tabla**.
 - **Copia de seguridad** (exportar/importar JSON) y exportación a **CSV/Excel**.
+
+## Extensión de captura en 1 clic
+En la carpeta [`extension/`](extension/) hay una extensión para Chrome/Edge que captura el anuncio
+que estás viendo (Idealista, Fotocasa, Wallapop…) y lo añade al CRM con un clic. Instrucciones en
+[`extension/INSTALAR.md`](extension/INSTALAR.md). No usa bots: solo lee la página que abres tú.
 
 ## Privacidad y datos
 - Los datos de los leads se guardan **solo en tu navegador** (`localStorage`). No se suben a ningún servidor ni a este repositorio.

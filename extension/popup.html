@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root{
+    --bg:#ffffff;--panel:#f7f9fc;--border:#e6eaf0;--text:#111b2b;--muted:#5a6675;
+    --brand:#1f5fdc;--brand-2:#1a52c4;--brand-soft:#eaf1ff;--green:#12936a;--red:#d3452f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{--bg:#131a24;--panel:#0f151d;--border:#232d3b;--text:#e9edf3;--muted:#a3afc0;--brand:#4f8cff;--brand-2:#3f7bf0;--brand-soft:#16233c;--green:#33c48b;--red:#f0705c;}
+  }
+  *{box-sizing:border-box}
+  body{width:340px;margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:13.5px}
+  header{display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid var(--border)}
+  header .mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(140deg,#2f6fe6,#5a3fe0);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+  header .t{font-weight:800;font-size:14px;letter-spacing:-.01em}
+  header .t small{display:block;font-weight:500;font-size:10.5px;color:var(--muted)}
+  .body{padding:13px 15px;max-height:460px;overflow-y:auto}
+  .status{font-size:12px;color:var(--muted);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex:none}
+  .field{margin-bottom:10px}
+  .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px}
+  .field input,.field select,.field textarea{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:13px;outline:none;font-family:inherit}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand)}
+  .field textarea{resize:vertical;min-height:44px}
+  .row{display:flex;gap:9px}
+  .row .field{flex:1}
+  .seg{display:flex;gap:6px;margin-bottom:10px}
+  .seg button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--muted);font-weight:700;font-size:12.5px;cursor:pointer}
+  .seg button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+  .seg.small button.on{border-color:var(--green);background:var(--green);color:#fff}
+  footer{padding:12px 15px;border-top:1px solid var(--border);display:flex;gap:9px}
+  .btn{flex:1;padding:10px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+  .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  .btn-primary:hover{background:var(--brand-2)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .note{font-size:11px;color:var(--muted);line-height:1.45;margin-top:10px;padding:9px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+  <header>
+    <div class="mark">R</div>
+    <div class="t">Capturar lead<small>Reduno · CRM de captación</small></div>
+  </header>
+  <div class="body">
+    <div class="status"><span class="dot"></span><span id="statusText">Leyendo el anuncio…</span></div>
+
+    <div class="seg" id="segType">
+      <button data-v="vendedor" class="on">🏷️ Vendedor</button>
+      <button data-v="comprador">💰 Comprador</button>
+    </div>
+
+    <div class="field"><label>Nombre / Referencia</label><input id="fName" placeholder="Ej. Piso Chamberí"></div>
+    <div class="row">
+      <div class="field"><label>Teléfono</label><input id="fPhone" placeholder="Si aparece"></div>
+      <div class="field"><label>Precio (€)</label><input id="fPrice" placeholder="Ej. 245000"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Zona</label><input id="fZone" placeholder="Ej. Chamberí, Madrid"></div>
+      <div class="field"><label>Inmueble</label>
+        <select id="fProp"><option>Piso</option><option>Casa / Chalet</option><option>Ático</option><option>Estudio</option><option>Local</option><option>Terreno</option><option>Garaje</option><option>Otro</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Origen</label>
+      <select id="fSource"><option>Idealista</option><option>Fotocasa</option><option>Wallapop</option><option>Vinted</option><option>Milanuncios</option><option>Habitaclia</option><option>Otro</option></select>
+    </div>
+    <div class="field"><label>¿Ya tiene inmobiliaria?</label>
+      <div class="seg small" id="segAgency">
+        <button data-v="no">No</button>
+        <button data-v="si">Sí</button>
+        <button data-v="desconocido" class="on">Por confirmar</button>
+      </div>
+    </div>
+    <div class="field"><label>Notas</label><textarea id="fNotes" placeholder="Detalles que quieras recordar…"></textarea></div>
+    <input type="hidden" id="fUrl">
+    <div class="note" id="warnNote"></div>
+  </div>
+  <footer>
+    <button class="btn" id="btnCancel">Cerrar</button>
+    <button class="btn btn-primary" id="btnSave">Guardar en CRM</button>
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>
